@@ -1,0 +1,10 @@
+#mmo-hud-party {
+  position: absolute;
+  z-index: 200;
+  top: 90px;
+  left: 110px;
+}
+#mmo-hud-party .character-info {
+  color: whitesmoke;
+}
+/*# sourceMappingURL=mmo-hud.css.map */
