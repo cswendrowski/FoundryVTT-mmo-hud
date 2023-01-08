@@ -26,7 +26,8 @@
   "scripts": [
   ],
   "styles": [
-    "styles/mmo-hud.css"
+    "styles/mmo-hud.css",
+    "styles/rpg-min.css"
   ],
   "languages": [
     {

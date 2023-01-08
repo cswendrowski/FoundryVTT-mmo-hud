@@ -27,6 +27,7 @@ export default class MMOHUD extends Application {
     async _renderInner(...args) {
         await loadTemplates({
             characterInfo: 'modules/mmo-hud/templates/character-info.html',
+            resourceBar: 'modules/mmo-hud/templates/resource-bar.html',
         });
         return super._renderInner(...args);
     }
@@ -37,11 +38,58 @@ export default class MMOHUD extends Application {
     async getData(options) {
         let data = await super.getData(options);
         data.party = [{
-            name: 'Test',
-            image: 'icons/svg/mystery-man.svg',
-            hp: 10,
-            maxHp: 20,
-        }]
+            id: "y2rIVgjNt6EAU0cY",
+            name: 'Mr. Dragonborn',
+            level: 5,
+            image: 'systems/archmage/assets/icons/tokens/monsters/dragon-red.webp',
+            primary: {
+                name: "Health",
+                value: 10,
+                max: 18,
+                theme: "rpg-t-hp"
+            },
+            secondary: {
+                name: "Recoveries",
+                value: 3,
+                max: 8,
+                theme: "rpg-t-mp"
+            },
+            effects: [
+                {
+                    name: "Blessed",
+                    icon: "systems/archmage/assets/icons/skills/emerald_01.jpg",
+                    isBuff: true
+                },
+                {
+                    name: "Affliction",
+                    icon: "systems/archmage/assets/icons/skills/affliction_01.jpg",
+                    isDebuff: true
+                },
+                {
+                    name: "Red Crystal",
+                    icon: "systems/archmage/assets/icons/skills/blood_01.jpg",
+                }
+            ]
+        }];
+        data.enemy = {
+            id: "y2rIVgjNt6EAU0cY",
+            name: "Big, Bad, Evil Guy",
+            level: 5,
+            primary: {
+                name: "Health",
+                value: 18,
+                max: 20,
+            }
+        }
+
+        // Calculate percentages
+        data.party.forEach((member) => {
+            member.primary.percent = Math.round((member.primary.value / member.primary.max) * 100);
+            member.secondary.percent = Math.round((member.secondary.value / member.secondary.max) * 100);
+        });
+        if ( data.enemy ) {
+            data.enemy.primary.percent = Math.round((data.enemy.primary.value / data.enemy.primary.max) * 100);
+        }
         return data;
     }
 

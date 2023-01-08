@@ -1,11 +1,18 @@
-<aside id="mmo-hud-party">
-    <ul class="party-list">
-        <li class="party-member">
+{{#if party}}
+<aside id="mmo-hud-party" class="rpg-box">
+    <h1>Light Party</h1>
+    <ul class="party-list rpg-nav">
+        <li class="party-member rpg-nav-item">
             {{#each party}}
             {{> characterInfo }}
             {{/each}}
         </li>
     </ul>
 </aside>
-<div id="mmo-hud-enemy-bar">
+{{/if}}
+
+{{#if enemy}}
+<div id="mmo-hud-enemy">
+    {{> characterInfo enemy }}
 </div>
+{{/if}}

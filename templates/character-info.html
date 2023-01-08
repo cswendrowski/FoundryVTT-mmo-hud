@@ -1,6 +1,37 @@
-<div class="character-info">
-    <div class="health-bar">
-        <label for="health">Name: {{name}}</label>
-        <progress id="health" value="{{hp}}" max="{{maxHp}}"> {{hp}}% </progress>
+<a class="rpg-nav-a" data-document-id="{{id}}">
+    <div class="character-info flexrow">
+        {{#if image}}
+        <div class="image">
+            <img src="{{image}}" alt="{{name}}"/>
+        </div>
+        {{/if}}
+        <div class="main-info flexcol">
+            <div class="metadata">
+                <span class="character-level">Lv{{level}}</span> <span class="character-name">{{name}}</span>
+            </div>
+            <div class="bars flexrow">
+                {{#if primary}}
+                    {{> resourceBar name=primary.name percent=primary.percent value=primary.value theme=primary.theme}}
+                {{/if}}
+                {{#if secondary}}
+                    {{> resourceBar name=secondary.name percent=secondary.percent value=secondary.value theme=secondary.theme}}
+                {{/if}}
+            </div>
+        </div>
+        <div class="secondary-info">
+            <div class="active-effects flexrow">
+                {{#each effects}}
+                <div class="effect" data-tooltip="{{name}}">
+                    {{#if isDebuff}}
+                    <img class="effect-frame debuff" src="/modules/mmo-hud/assets/frame-debuff-white.png" alt="{{name}}" style="background-image: url({{icon}});"/>
+                    {{else if isBuff}}
+                    <img class="effect-frame buff" src="/modules/mmo-hud/assets/frame-buff-white.png" alt="{{name}}" style="background-image: url({{icon}});"/>
+                    {{else}}
+                    <img class="effect-frame" src="/modules/mmo-hud/assets/buff-debuff-frame.png" alt="{{name}}" style="background-image: url({{icon}});"/>
+                    {{/if}}
+                </div>
+                {{/each}}
+            </div>
+        </div>
     </div>
-</div>
+</a>
