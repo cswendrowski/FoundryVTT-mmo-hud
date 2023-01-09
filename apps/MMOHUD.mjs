@@ -70,6 +70,40 @@ export default class MMOHUD extends Application {
                     icon: "systems/archmage/assets/icons/skills/blood_01.jpg",
                 }
             ]
+        },
+        {
+            id: "y2rIVgjNt6EAU0cY",
+            name: 'T. Fling',
+            level: 5,
+            image: 'systems/archmage/assets/icons/tokens/monsters/demon.webp',
+            primary: {
+                name: "Health",
+                value: 15,
+                max: 18,
+                theme: "rpg-t-hp"
+            },
+            secondary: {
+                name: "Recoveries",
+                value: 6,
+                max: 8,
+                theme: "rpg-t-mp"
+            },
+            effects: [
+                {
+                    name: "Blessed",
+                    icon: "systems/archmage/assets/icons/skills/emerald_01.jpg",
+                    isBuff: true
+                },
+                {
+                    name: "Affliction",
+                    icon: "systems/archmage/assets/icons/skills/affliction_01.jpg",
+                    isDebuff: true
+                },
+                {
+                    name: "Red Crystal",
+                    icon: "systems/archmage/assets/icons/skills/blood_01.jpg",
+                }
+            ]
         }];
         data.enemy = {
             id: "y2rIVgjNt6EAU0cY",
@@ -106,7 +140,27 @@ export default class MMOHUD extends Application {
         if ( data.enemy ) {
             data.enemy.primary.percent = Math.round((data.enemy.primary.value / data.enemy.primary.max) * 100);
         }
+
+        // Determine party size
+        data.partySize = this._getPartySize(data.party.length);
+
         return data;
+    }
+
+    /* -------------------------------------------- */
+
+    /**
+     * Returns the label for the party size
+     * @param {number} size
+     * @returns {string}
+     * @private
+     */
+    _getPartySize(size) {
+        if ( size === 1 ) return "Solo";
+        if ( size === 2 ) return "Duo";
+        if ( size <= 4 ) return "Light Party";
+        if ( size <= 8 ) return "Full Party";
+        return "Alliance";
     }
 
     /* -------------------------------------------- */

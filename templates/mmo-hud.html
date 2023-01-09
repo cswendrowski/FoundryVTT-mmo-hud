@@ -1,12 +1,12 @@
 {{#if party}}
 <aside id="mmo-hud-party" class="rpg-box">
-    <h1>Light Party</h1>
+    <h1>{{partySize}}</h1>
     <ul class="party-list rpg-nav">
+        {{#each party}}
         <li class="party-member rpg-nav-item">
-            {{#each party}}
             {{> characterInfo }}
-            {{/each}}
         </li>
+        {{/each}}
     </ul>
 </aside>
 {{/if}}
