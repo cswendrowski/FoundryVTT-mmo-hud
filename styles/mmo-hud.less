@@ -12,7 +12,9 @@
   > h1 {
     color: @yellow-font;
   }
+}
 
+#mmo-hud-party, #mmo-hud-enemy {
   .character-info {
     color: @blue-font;
 
@@ -101,7 +103,16 @@
 
 #mmo-hud-enemy {
   position: absolute;
-  width: 60%;
+  width: 70%;
   bottom: 100px;
-  left: 30%;
+  left: 20%;
+
+  .metadata {
+    font-size: large;
+  }
+
+  .bar-value {
+    left: 7% !important;
+    top: 8px !important;
+  }
 }

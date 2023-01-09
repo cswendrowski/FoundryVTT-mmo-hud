@@ -79,7 +79,23 @@ export default class MMOHUD extends Application {
                 name: "Health",
                 value: 18,
                 max: 20,
-            }
+            },
+            effects: [
+                {
+                    name: "Blessed",
+                    icon: "systems/archmage/assets/icons/skills/emerald_01.jpg",
+                    isBuff: true
+                },
+                {
+                    name: "Affliction",
+                    icon: "systems/archmage/assets/icons/skills/affliction_01.jpg",
+                    isDebuff: true
+                },
+                {
+                    name: "Red Crystal",
+                    icon: "systems/archmage/assets/icons/skills/blood_01.jpg",
+                }
+            ]
         }
 
         // Calculate percentages
