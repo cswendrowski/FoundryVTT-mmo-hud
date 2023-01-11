@@ -10,9 +10,11 @@ Hooks.once('canvasReady', async function() {
     MMOHUD.init();
 });
 
-Hooks.on("updateActor", (actor, data, options, userId) => {
-    // Update MMO HUD
+function _updateMmoHud() {
     if (ui.mmoHud) {
         ui.mmoHud.render();
     }
-});
+}
+
+Hooks.on("updateActor", () => _updateMmoHud());
+Hooks.on("targetToken", () => _updateMmoHud());

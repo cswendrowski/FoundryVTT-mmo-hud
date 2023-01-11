@@ -99,6 +99,9 @@
 #mmo-hud-enemy-info .metadata {
   font-size: large;
 }
+#mmo-hud-enemy-info .character-info {
+  margin-top: 10px;
+}
 #mmo-hud-enemy-info .bar-value {
   left: 63% !important;
   top: 33px !important;

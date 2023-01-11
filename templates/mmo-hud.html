@@ -1,24 +1,26 @@
-{{#if party}}
-<aside id="mmo-hud-party" class="rpg-box">
-    <h1>{{partySize}}</h1>
-    <ul class="party-list rpg-nav">
-        {{#each party}}
-        <li class="party-member rpg-nav-item">
-            {{> characterInfo }}
+<div id="mmo-hud">
+    {{#if party}}
+    <aside id="mmo-hud-party" class="rpg-box">
+        <h1>{{partySize}}</h1>
+        <ul class="party-list rpg-nav">
+            {{#each party}}
+            <li class="party-member rpg-nav-item">
+                {{> characterInfo }}
+            </li>
+            {{/each}}
+        </ul>
+    </aside>
+    {{/if}}
+
+    {{#if enemies}}
+    <aside id="mmo-hud-enemy-info">
+        <ul class="enemy-list">
+        {{#each enemies}}
+        <li>
+            {{> characterInfo excludeValue=true }}
         </li>
         {{/each}}
-    </ul>
-</aside>
-{{/if}}
-
-{{#if enemies}}
-<aside id="mmo-hud-enemy-info">
-    <ul class="enemy-list">
-    {{#each enemies}}
-    <li>
-        {{> characterInfo excludeValue=true }}
-    </li>
-    {{/each}}
-    </ul>
-</aside>
-{{/if}}
+        </ul>
+    </aside>
+    {{/if}}
+</div>
