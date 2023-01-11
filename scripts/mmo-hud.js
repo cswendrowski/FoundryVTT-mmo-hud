@@ -1,9 +1,15 @@
 import MMOHUD from "../apps/MMOHUD.mjs";
 
 Hooks.once('init', async function() {
+    const rerenderHooks = ["updateActor", "targetToken", "updateCombat",
+        "deleteCombatant", "createCombatant"];
+    for (const hook of rerenderHooks) {
+        Hooks.on(hook, _updateMmoHud);
+    }
 });
 
 Hooks.once('ready', async function() {
+
 });
 
 Hooks.once('canvasReady', async function() {
@@ -15,6 +21,3 @@ function _updateMmoHud() {
         ui.mmoHud.render();
     }
 }
-
-Hooks.on("updateActor", () => _updateMmoHud());
-Hooks.on("targetToken", () => _updateMmoHud());

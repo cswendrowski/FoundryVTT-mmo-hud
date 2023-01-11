@@ -100,7 +100,7 @@ export default class MMOHUD extends Application {
         }
 
         // Translate the actor data into the format we need
-        return party.map(actor => {
+        let data = party.map(actor => {
             return {
                 id: actor.id,
                 name: actor.name,
@@ -127,8 +127,25 @@ export default class MMOHUD extends Application {
                         isDebuff: e.changes.some(c => c.value < 0),
                     }
                 })
-            }
+            };
         });
+
+        if ( game.combat ) {
+            // Determine relative initative order
+            const combatants = game.combat.combatants;
+            data.forEach((member) => {
+                const combatant = combatants.find(c => c.actor.id === member.id);
+                if ( combatant ) {
+                    member.initiative = combatant.initiative;
+                }
+            });
+            data.sort((a, b) => b.initiative - a.initiative);
+            for ( let i = 0; i < data.length; i++ ) {
+                data[i].initiativeOrder = i + 1;
+            }
+        }
+
+        return data;
     }
 
     /* -------------------------------------------- */

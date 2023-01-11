@@ -7,6 +7,9 @@
         {{/if}}
         <div class="main-info flexcol">
             <div class="metadata">
+                {{#if initiativeOrder}}
+                <span class="initiative-order">{{initiativeOrder}}</span>
+                {{/if}}
                 <span class="character-level">Lv{{level}}</span> <span class="character-name">{{name}}</span>
             </div>
             <div class="bars flexrow">

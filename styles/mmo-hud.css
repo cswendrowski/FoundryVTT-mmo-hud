@@ -33,6 +33,19 @@
   font-weight: bold;
   font-size: larger;
 }
+#mmo-hud-party .character-info .main-info .metadata .initiative-order,
+#mmo-hud-enemy-info .character-info .main-info .metadata .initiative-order {
+  color: #847350;
+  background-color: #fff4e2;
+  border-radius: 5px;
+  border: 2px solid black;
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+  text-shadow: none;
+  text-align: center;
+  padding-top: 2px;
+}
 #mmo-hud-party .character-info .main-info .bars .bar,
 #mmo-hud-enemy-info .character-info .main-info .bars .bar {
   width: 40%;
