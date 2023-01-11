@@ -228,7 +228,9 @@ export default class MMOHUD extends Application {
 
         const targeted = Array.from(game.user.targets.map(t => t.document._actor));
         const boss = canvas.scene.tokens.filter(t => t.flags["mmo-hud"] && t.flags["mmo-hud"]["boss"] === true).map(t => t.actor);
-        const enemies = targeted.concat(boss);
+        let enemies = targeted.concat(boss);
+        // TODO: Everything is actor id, but we need to be able to handle token ids as well. Then we can dedupe
+        //enemies = enemies.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
 
         return enemies.map(actor => {
             return {
