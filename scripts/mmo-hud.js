@@ -16,7 +16,7 @@ Hooks.on('renderCombatTracker', (tracker, html, data) => {
     if ( !game.user.isGM ) return;
 
     // Add a new button to the combatant controls
-    const button = $(`<a class="combatant-control mmo-hud" data-tooltip="Toggle MMO HUD Lock"><i class="fas fa-alien-8bit"></i></a>`);
+    const button = $(`<a class="combatant-control mmo-hud" data-tooltip="Toggle MMO Health Bar"><i class="fas fa-alien-8bit"></i></a>`);
     button.click(async ev => {
         ev.preventDefault();
         ev.stopPropagation();
