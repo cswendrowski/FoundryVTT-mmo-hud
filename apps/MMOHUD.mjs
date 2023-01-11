@@ -308,5 +308,19 @@ export default class MMOHUD extends Application {
     /** @override */
     activateListeners(html) {
         super.activateListeners(html);
+
+        html.find(".rpg-nav-a").click(this._onCharacterClick.bind(this));
+    }
+
+    /* -------------------------------------------- */
+
+    _onCharacterClick(event) {
+        event.preventDefault();
+        const actorId = event.currentTarget.dataset.documentId;
+        const actor = game.actors.get(actorId);
+        if ( actor ) {
+            const activeTokenIds = actor.getActiveTokens().map(t => t.id);
+            game.user.updateTokenTargets([activeTokenIds[0]]);
+        }
     }
 }
