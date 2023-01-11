@@ -1,4 +1,9 @@
 <div class="bar rpg-progress" data-tooltip="{{name}}">
     <div class="rpg-progress-bar {{theme}}" style="width: {{percent}}%;"></div>
+    {{#if bonusPercent}}
+    <div class="rpg-progress-bar is-charged bonus-percent" style="width: {{bonusPercent}}%;"></div>
+    {{/if}}
+    {{#unless excludeValue}}
     <span class="bar-value">{{value}}</span>
+    {{/unless}}
 </div>

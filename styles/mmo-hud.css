@@ -8,41 +8,41 @@
   color: #cebda0;
 }
 #mmo-hud-party .character-info,
-#mmo-hud-enemy .character-info {
+#mmo-hud-enemy-info .character-info {
   color: #d4f0f3;
 }
 #mmo-hud-party .character-info .image,
-#mmo-hud-enemy .character-info .image {
+#mmo-hud-enemy-info .character-info .image {
   width: 60px;
   height: 60px;
   margin-right: 10px;
   flex: 0 0 auto;
 }
 #mmo-hud-party .character-info .image > img,
-#mmo-hud-enemy .character-info .image > img {
+#mmo-hud-enemy-info .character-info .image > img {
   width: 100%;
   height: 100%;
 }
 #mmo-hud-party .character-info .main-info,
-#mmo-hud-enemy .character-info .main-info {
+#mmo-hud-enemy-info .character-info .main-info {
   margin-right: 20px;
   flex: 2;
 }
 #mmo-hud-party .character-info .main-info .metadata,
-#mmo-hud-enemy .character-info .main-info .metadata {
+#mmo-hud-enemy-info .character-info .main-info .metadata {
   font-weight: bold;
   font-size: larger;
 }
 #mmo-hud-party .character-info .main-info .bars .bar,
-#mmo-hud-enemy .character-info .main-info .bars .bar {
+#mmo-hud-enemy-info .character-info .main-info .bars .bar {
   width: 40%;
 }
 #mmo-hud-party .character-info .main-info .bars .bar > progress,
-#mmo-hud-enemy .character-info .main-info .bars .bar > progress {
+#mmo-hud-enemy-info .character-info .main-info .bars .bar > progress {
   width: 100%;
 }
 #mmo-hud-party .character-info .main-info .bars .bar .bar-value,
-#mmo-hud-enemy .character-info .main-info .bars .bar .bar-value {
+#mmo-hud-enemy-info .character-info .main-info .bars .bar .bar-value {
   position: absolute;
   flex: none;
   left: 62%;
@@ -52,22 +52,26 @@
   color: #d4f0f3;
 }
 #mmo-hud-party .character-info .main-info .bars .bar:first-of-type,
-#mmo-hud-enemy .character-info .main-info .bars .bar:first-of-type {
+#mmo-hud-enemy-info .character-info .main-info .bars .bar:first-of-type {
   margin-right: 20px;
 }
 #mmo-hud-party .character-info .main-info .bars .bar:first-of-type .bar-value,
-#mmo-hud-enemy .character-info .main-info .bars .bar:first-of-type .bar-value {
+#mmo-hud-enemy-info .character-info .main-info .bars .bar:first-of-type .bar-value {
   left: 32%;
 }
+#mmo-hud-party .character-info .main-info .bars .bar > .bonus-percent,
+#mmo-hud-enemy-info .character-info .main-info .bars .bar > .bonus-percent {
+  box-shadow: 0em 0.21em 0em 0em rgba(0, 0, 0, 0.5) inset;
+}
 #mmo-hud-party .character-info .secondary-info .active-effects .effect,
-#mmo-hud-enemy .character-info .secondary-info .active-effects .effect {
+#mmo-hud-enemy-info .character-info .secondary-info .active-effects .effect {
   width: 40px;
   height: 50px;
   flex: 0 0 auto;
   margin-right: 5px;
 }
 #mmo-hud-party .character-info .secondary-info .active-effects .effect > .effect-frame,
-#mmo-hud-enemy .character-info .secondary-info .active-effects .effect > .effect-frame {
+#mmo-hud-enemy-info .character-info .secondary-info .active-effects .effect > .effect-frame {
   width: 100%;
   height: 100%;
   background-size: contain;
@@ -76,26 +80,26 @@
   padding-bottom: 7px;
 }
 #mmo-hud-party .character-info .secondary-info .active-effects .effect > .effect-frame.buff,
-#mmo-hud-enemy .character-info .secondary-info .active-effects .effect > .effect-frame.buff {
+#mmo-hud-enemy-info .character-info .secondary-info .active-effects .effect > .effect-frame.buff {
   margin-top: -4px;
   background-position-y: bottom;
   padding-bottom: 0;
 }
 #mmo-hud-party .character-info .secondary-info .active-effects .effect > .effect-frame.debuff,
-#mmo-hud-enemy .character-info .secondary-info .active-effects .effect > .effect-frame.debuff {
+#mmo-hud-enemy-info .character-info .secondary-info .active-effects .effect > .effect-frame.debuff {
   margin-top: 4px;
   padding-bottom: 0;
 }
-#mmo-hud-enemy {
+#mmo-hud-enemy-info {
   position: absolute;
   width: 70%;
   bottom: 100px;
   left: 20%;
 }
-#mmo-hud-enemy .metadata {
+#mmo-hud-enemy-info .metadata {
   font-size: large;
 }
-#mmo-hud-enemy .bar-value {
+#mmo-hud-enemy-info .bar-value {
   left: 63% !important;
   top: 33px !important;
 }

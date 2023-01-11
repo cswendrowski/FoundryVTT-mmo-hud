@@ -14,7 +14,7 @@
   }
 }
 
-#mmo-hud-party, #mmo-hud-enemy {
+#mmo-hud-party, #mmo-hud-enemy-info {
   .character-info {
     color: @blue-font;
 
@@ -64,6 +64,10 @@
               left: 32%;
             }
           }
+
+          > .bonus-percent {
+            box-shadow: 0em .21em 0em 0em rgba(0,0,0,.5) inset;
+          }
         }
       }
     }
@@ -101,7 +105,7 @@
   }
 }
 
-#mmo-hud-enemy {
+#mmo-hud-enemy-info {
   position: absolute;
   width: 70%;
   bottom: 100px;

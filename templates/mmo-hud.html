@@ -11,8 +11,14 @@
 </aside>
 {{/if}}
 
-{{#if enemy}}
-<div id="mmo-hud-enemy">
-    {{> characterInfo enemy }}
-</div>
+{{#if enemies}}
+<aside id="mmo-hud-enemy-info">
+    <ul class="enemy-list">
+    {{#each enemies}}
+    <li>
+        {{> characterInfo excludeValue=true }}
+    </li>
+    {{/each}}
+    </ul>
+</aside>
 {{/if}}
