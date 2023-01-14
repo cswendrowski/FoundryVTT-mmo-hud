@@ -38,7 +38,7 @@ export default class MMOHUD extends Application {
     async getData(options) {
         let data = await super.getData(options);
         data.party = this._getParty();
-        data.enemies = this._getEnemies();
+        data.enemies = this._getEnemies(data.party.map(a => a.id));
 
         // Calculate percentages
         data.party.forEach((member) => {
@@ -99,6 +99,13 @@ export default class MMOHUD extends Application {
             party = party.concat(friendlyCombatants);
         }
 
+        function _getActorTokenId(actor) {
+            const activeTokens = actor.getActiveTokens();
+            if (!activeTokens) return null;
+            return activeTokens[0].data._id;
+        }
+
+
         // Translate the actor data into the format we need
         let data = party.map(actor => {
             return {
@@ -106,6 +113,7 @@ export default class MMOHUD extends Application {
                 name: actor.name,
                 level: actor.system.details.level.value,
                 image: actor.img,
+                targeted: game.user.targets.ids.includes(_getActorTokenId(actor)),
                 primary: {
                     name: actor.system.attributes.hp.label,
                     value: actor.system.attributes.hp.value,
@@ -125,6 +133,7 @@ export default class MMOHUD extends Application {
                         icon: e.icon,
                         isBuff: e.changes.some(c => c.value > 0),
                         isDebuff: e.changes.some(c => c.value < 0),
+                        tooltip: e.label + (e.description ? `<br><hr>${e.description}` : "")
                     }
                 })
             };
@@ -144,7 +153,6 @@ export default class MMOHUD extends Application {
                 data[i].initiativeOrder = i + 1;
             }
         }
-
         return data;
     }
 
@@ -223,27 +231,28 @@ export default class MMOHUD extends Application {
 
     /* -------------------------------------------- */
 
-    _getEnemies() {
+    _getEnemies(partyIds) {
         if ( !canvas?.scene ) return [];
 
-        const targeted = Array.from(game.user.targets.map(t => t.document._actor));
-        const boss = canvas.scene.tokens.filter(t => t.flags["mmo-hud"] && t.flags["mmo-hud"]["boss"] === true).map(t => t.actor);
+        const targeted = Array.from(game.user.targets
+            .filter(t => !partyIds.includes(t.document.actor._id))
+            .map(t => t.document));
+        const boss = canvas.scene.tokens.filter(t => t.flags["mmo-hud"] && t.flags["mmo-hud"]["boss"] === true);
         let enemies = targeted.concat(boss);
-        // TODO: Everything is actor id, but we need to be able to handle token ids as well. Then we can dedupe
-        //enemies = enemies.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
+        enemies = enemies.filter((v, i, a) => a.findIndex(t => (t._id === v._id)) === i);
 
-        return enemies.map(actor => {
+        return enemies.map(token => {
             return {
-                id: actor.id,
-                name: actor.name,
-                level: actor.system.details.level.value,
+                id: token._id,
+                name: token.name,
+                level: token.actor.system.details.level.value,
                 primary: {
-                    name: actor.system.attributes.hp.label,
-                    value: actor.system.attributes.hp.value,
-                    temp: actor.system.attributes.hp.temp,
-                    max: actor.system.attributes.hp.max
+                    name: token.actor.system.attributes.hp.label,
+                    value: token.actor.system.attributes.hp.value,
+                    temp: token.actor.system.attributes.hp.temp,
+                    max: token.actor.system.attributes.hp.max
                 },
-                effects: actor.effects.map(e => {
+                effects: token.actor.effects.map(e => {
                     return {
                         name: e.label,
                         icon: e.icon,

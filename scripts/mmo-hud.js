@@ -38,3 +38,10 @@ function _updateMmoHud() {
         ui.mmoHud.render();
     }
 }
+
+// When combat ends, remove all mmo-hud flags from tokens
+Hooks.on("deleteCombat", (combat, options, userId) => {
+    for (const token of canvas.tokens.placeables) {
+        token.document.unsetFlag("mmo-hud", "boss");
+    }
+});

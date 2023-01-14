@@ -24,7 +24,7 @@
         <div class="secondary-info">
             <div class="active-effects flexrow">
                 {{#each effects}}
-                <div class="effect" data-tooltip="{{name}}">
+                <div class="effect" data-tooltip="{{tooltip}}">
                     {{#if isDebuff}}
                     <img class="effect-frame debuff" src="/modules/mmo-hud/assets/frame-debuff-white.png" alt="{{name}}" style="background-image: url({{icon}});"/>
                     {{else if isBuff}}
