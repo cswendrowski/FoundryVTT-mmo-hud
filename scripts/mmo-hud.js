@@ -6,10 +6,31 @@ Hooks.once('init', async function() {
     for (const hook of rerenderHooks) {
         Hooks.on(hook, _updateMmoHud);
     }
-});
 
-Hooks.once('ready', async function() {
+    game.settings.register("mmo-hud", "showMode", {
+        name: "Show Mode",
+        hint: "When should the Party HUD be shown?",
+        scope: "client",
+        config: true,
+        type: String,
+        onChange: _updateMmoHud,
+        default: "always",
+        choices: {
+            "always": "Always",
+            "combat": "Only in Combat",
+            "never": "Never"
+        }
+    });
 
+    game.settings.register("mmo-hud", "transparentVersion", {
+        name: "Use transparent version of the HUD",
+        hint: "Makes the HUD background more transparent, making it easier to see the Scene behind it.",
+        scope: "user",
+        config: true,
+        default: false,
+        onChange: _updateMmoHud,
+        type: Boolean
+    });
 });
 
 Hooks.on('renderCombatTracker', (tracker, html, data) => {
@@ -40,7 +61,7 @@ function _updateMmoHud() {
 }
 
 // When combat ends, remove all mmo-hud flags from tokens
-Hooks.on("deleteCombat", (combat, options, userId) => {
+Hooks.on("deleteCombat", () => {
     for (const token of canvas.tokens.placeables) {
         token.document.unsetFlag("mmo-hud", "boss");
     }

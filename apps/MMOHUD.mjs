@@ -59,19 +59,28 @@ export default class MMOHUD extends Application {
 
     /** @override */
     async getData(options) {
+        const showMode = game.settings.get("mmo-hud", "showMode");
         let data = await super.getData(options);
-        data.party = this._getParty();
-        data.enemies = this._getEnemies(data.party.map(a => a.id));
+        data.boxClass = game.settings.get("mmo-hud", "transparentVersion") ? "rpg-title-box" : "rpg-box";
+        if ( showMode === "always" || (showMode === "combat" && game.combat) ) {
+            data.party = this._getParty();
+
+            // Calculate percentages
+            data.party.forEach((member) => {
+                const totalPrimary = member.primary.max + (member.primary.temp ?? 0);
+                member.primary.percent = Math.round((member.primary.value / totalPrimary) * 100);
+                if ( member.primary.temp ) {
+                    member.primary.bonusPercent = Math.round((member.primary.temp / totalPrimary) * 100);
+                }
+                member.secondary.percent = Math.round((member.secondary.value / member.secondary.max) * 100);
+            });
+
+            // Determine party size
+            data.partySize = this._getPartySize(data.party.length);
+        }
+        data.enemies = this._getEnemies(data.party?.map(a => a.id) ?? []);
 
         // Calculate percentages
-        data.party.forEach((member) => {
-            const totalPrimary = member.primary.max + (member.primary.temp ?? 0);
-            member.primary.percent = Math.round((member.primary.value / totalPrimary) * 100);
-            if ( member.primary.temp ) {
-                member.primary.bonusPercent = Math.round((member.primary.temp / totalPrimary) * 100);
-            }
-            member.secondary.percent = Math.round((member.secondary.value / member.secondary.max) * 100);
-        });
         data.enemies.forEach((enemy) => {
             const totalPrimary = enemy.primary.max + (enemy.primary.temp ?? 0);
             enemy.primary.percent = Math.round((enemy.primary.value / totalPrimary) * 100);
@@ -80,8 +89,6 @@ export default class MMOHUD extends Application {
             }
         });
 
-        // Determine party size
-        data.partySize = this._getPartySize(data.party.length);
         return data;
     }
 
