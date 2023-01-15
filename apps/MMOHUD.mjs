@@ -68,10 +68,14 @@ export default class MMOHUD extends Application {
 
             // Calculate percentages
             data.party.forEach((member) => {
-                const totalPrimary = member.primary.max + (member.primary.temp ?? 0);
+                const tempWouldExceedMax = member.primary.value + member.primary.temp > member.primary.max;
+                const totalPrimary = tempWouldExceedMax ? (member.primary.value + (member.primary.temp ?? 0)) : member.primary.max;
                 member.primary.percent = Math.round((member.primary.value / totalPrimary) * 100);
                 if ( member.primary.temp ) {
                     member.primary.bonusPercent = Math.round((member.primary.temp / totalPrimary) * 100);
+                    if ( member.primary.percent + member.primary.bonusPercent > 100 ) {
+                        member.primary.bonusPercent = 100 - member.primary.percent;
+                    }
                 }
                 member.secondary.percent = Math.round((member.secondary.value / member.secondary.max) * 100);
             });
