@@ -28,6 +28,7 @@ export default class MMOHUD extends Application {
     constructor(options) {
         super(options);
         this.systemConverter = new GenericSystem();
+        this.partyIds = [];
 
         switch (game.system.id) {
             case "archmage":
@@ -77,6 +78,7 @@ export default class MMOHUD extends Application {
 
             // Determine party size
             data.partySize = this._getPartySize(data.party.length);
+            this.partyIds = data.party.map(p => p.id);
         }
         data.enemies = this._getEnemies(data.party?.map(a => a.id) ?? []);
 

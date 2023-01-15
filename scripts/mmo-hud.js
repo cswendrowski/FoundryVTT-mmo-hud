@@ -33,8 +33,12 @@ Hooks.once('init', async function() {
     });
 });
 
+Hooks.on("ready", () => {
+    MMOHUD.init();
+});
+
 Hooks.on('renderCombatTracker', (tracker, html, data) => {
-    if ( !game.user.isGM ) return;
+    if ( !game.user.isGM || !ui.mmoHud ) return;
 
     // Add a new button to the combatant controls
     const button = $(`<a class="combatant-control mmo-hud" data-tooltip="Toggle MMO Health Bar"><i class="fas fa-alien-8bit"></i></a>`);
@@ -47,12 +51,22 @@ Hooks.on('renderCombatTracker', (tracker, html, data) => {
         await token.document.setFlag("mmo-hud", "boss", !currentState);
         ui.mmoHud.render();
     });
-    html.find('.combatant-controls').prepend(button);
+
+    // Don't render the flag for the Party
+    let controls = html.find(".combatant .combatant-controls");
+    controls.each((i, el) => {
+        // Get the combatant
+        const combatant = game.combat.combatants.get(el.closest(".combatant").dataset.combatantId);
+        if ( ui.mmoHud.partyIds.includes(combatant.actorId) || ui.mmoHud.partyIds.includes(combatant.tokenId) ) return;
+
+        // Add the button
+        el.prepend(button.clone(true)[0]);
+    });
 });
 
-Hooks.once('canvasReady', async function() {
-    MMOHUD.init();
-});
+// Hooks.once('canvasReady', async function() {
+//     MMOHUD.init();
+// });
 
 function _updateMmoHud() {
     if (ui.mmoHud) {
