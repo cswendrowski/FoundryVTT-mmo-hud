@@ -105,6 +105,27 @@ export default class MMOHUD extends Application {
             return activeTokens[0].data._id;
         }
 
+        function _getActorImage(actor) {
+            // If a flag is set, prefer that
+            if ( actor.token?.flags?.["mmo-hud"]?.["image"] ) {
+                return actor.token.flags["mmo-hud"]["image"];
+            }
+            else if ( actor.prototypeToken?.flags?.["mmo-hud"]?.["image"] ) {
+                return actor.prototypeToken.flags["mmo-hud"]["image"];
+            }
+            else if ( actor.flags?.["mmo-hud"]?.["image"] ) {
+                return actor.flags["mmo-hud"]["image"];
+            }
+
+            // If a token exists, use that
+            const activeTokens = actor.getActiveTokens();
+            if ( activeTokens ) {
+                return activeTokens[0].document._actor.img;
+            }
+
+            // Otherwise, use actor image
+            return actor.img;
+        }
 
         // Translate the actor data into the format we need
         let data = party.map(actor => {
@@ -112,7 +133,7 @@ export default class MMOHUD extends Application {
                 id: actor.id,
                 name: actor.name,
                 level: actor.system.details.level.value,
-                image: actor.img,
+                image: _getActorImage(actor),
                 targeted: game.user.targets.ids.includes(_getActorTokenId(actor)),
                 primary: {
                     name: actor.system.attributes.hp.label,
