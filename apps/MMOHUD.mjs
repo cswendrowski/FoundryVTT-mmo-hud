@@ -1,3 +1,5 @@
+import GenericSystem from "../systems/genericSystem.mjs";
+
 export default class MMOHUD extends Application {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -19,6 +21,27 @@ export default class MMOHUD extends Application {
         ui.mmoHud = instance;
         instance.render(true);
         console.log('MMO HUD | Initialized');
+    }
+
+    /* -------------------------------------------- */
+
+    constructor(options) {
+        super(options);
+        this.systemConverter = new GenericSystem();
+
+        switch (game.system.id) {
+            case "archmage":
+                //this.systemConverter = new ArchmageSystem();
+                break;
+            case "dnd5e":
+                //this.systemConverter = new DnD5eSystem();
+                break;
+            case "pf2e":
+                //this.systemConverter = new PF2eSystem();
+                break;
+            default:
+                console.log(`MMO HUD | No specific system converter found for ${game.system.id}, using the Generic one.`);
+        }
     }
 
     /* -------------------------------------------- */
@@ -59,7 +82,6 @@ export default class MMOHUD extends Application {
 
         // Determine party size
         data.partySize = this._getPartySize(data.party.length);
-
         return data;
     }
 
@@ -99,80 +121,11 @@ export default class MMOHUD extends Application {
             party = party.concat(friendlyCombatants);
         }
 
-        function _getActorTokenId(actor) {
-            const activeTokens = actor.getActiveTokens();
-            if (!activeTokens) return null;
-            return activeTokens[0].data._id;
-        }
-
-        function _getActorImage(actor) {
-            // If a flag is set, prefer that
-            if ( actor.token?.flags?.["mmo-hud"]?.["image"] ) {
-                return actor.token.flags["mmo-hud"]["image"];
-            }
-            else if ( actor.prototypeToken?.flags?.["mmo-hud"]?.["image"] ) {
-                return actor.prototypeToken.flags["mmo-hud"]["image"];
-            }
-            else if ( actor.flags?.["mmo-hud"]?.["image"] ) {
-                return actor.flags["mmo-hud"]["image"];
-            }
-
-            // If a token exists, use that
-            const activeTokens = actor.getActiveTokens();
-            if ( activeTokens ) {
-                return activeTokens[0].document._actor.img;
-            }
-
-            // Otherwise, use actor image
-            return actor.img;
-        }
-
         // Translate the actor data into the format we need
-        let data = party.map(actor => {
-            return {
-                id: actor.id,
-                name: actor.name,
-                level: actor.system.details.level.value,
-                image: _getActorImage(actor),
-                targeted: game.user.targets.ids.includes(_getActorTokenId(actor)),
-                primary: {
-                    name: actor.system.attributes.hp.label,
-                    value: actor.system.attributes.hp.value,
-                    max: actor.system.attributes.hp.max,
-                    temp: actor.system.attributes.hp.temp,
-                    theme: "rpg-t-hp"
-                },
-                secondary: {
-                    name: actor.system.attributes.recoveries.label,
-                    value: actor.system.attributes.recoveries.value,
-                    max: actor.system.attributes.recoveries.max,
-                    theme: "rpg-t-mp"
-                },
-                effects: actor.effects.map(e => {
-                    return {
-                        name: e.label,
-                        icon: e.icon,
-                        isBuff: e.changes.some(c => c.value > 0),
-                        isDebuff: e.changes.some(c => c.value < 0),
-                        tooltip: e.label + (e.description ? `<br><hr>${e.description}` : "")
-                    }
-                })
-            };
-        });
+        let data = party.map(a => this.systemConverter.translatePartyActor(a));
 
         if ( game.combat ) {
-            // Determine relative initative order
-            const combatants = game.combat.combatants;
-            data.forEach((member) => {
-                const combatant = combatants.find(c => c.actor.id === member.id);
-                if ( combatant ) {
-                    member.initiative = combatant.initiative;
-                }
-            });
-            data.sort((a, b) => b.initiative - a.initiative);
-            for ( let i = 0; i < data.length; i++ ) {
-                data[i].initiativeOrder = i + 1;
-            }
+            data = this.systemConverter.setInitiatives(data);
         }
         return data;
     }
@@ -262,27 +215,7 @@ export default class MMOHUD extends Application {
         let enemies = targeted.concat(boss);
         enemies = enemies.filter((v, i, a) => a.findIndex(t => (t._id === v._id)) === i);
 
-        return enemies.map(token => {
-            return {
-                id: token._id,
-                name: token.name,
-                level: token.actor.system.details.level.value,
-                primary: {
-                    name: token.actor.system.attributes.hp.label,
-                    value: token.actor.system.attributes.hp.value,
-                    temp: token.actor.system.attributes.hp.temp,
-                    max: token.actor.system.attributes.hp.max
-                },
-                effects: token.actor.effects.map(e => {
-                    return {
-                        name: e.label,
-                        icon: e.icon,
-                        isBuff: e.changes.some(c => c.value > 0),
-                        isDebuff: e.changes.some(c => c.value < 0),
-                    }
-                })
-            }
-        });
+        return enemies.map(t => this.systemConverter.translateEnemyToken(t));
     }
 
     /* -------------------------------------------- */
@@ -340,7 +273,6 @@ export default class MMOHUD extends Application {
     /** @override */
     activateListeners(html) {
         super.activateListeners(html);
-
         html.find(".rpg-nav-a").click(this._onCharacterClick.bind(this));
     }
 
@@ -352,7 +284,15 @@ export default class MMOHUD extends Application {
         const actor = game.actors.get(actorId);
         if ( actor ) {
             const activeTokenIds = actor.getActiveTokens().map(t => t.id);
-            game.user.updateTokenTargets([activeTokenIds[0]]);
+            const currentTargets = game.user.targets.ids;
+            // If id is already in the set, remove it
+            if ( game.user.targets.ids.includes(activeTokenIds[0]) ) {
+                const newTargets = currentTargets.filter(id => id !== activeTokenIds[0]);
+                game.user.updateTokenTargets(newTargets);
+            }
+            else {
+                game.user.updateTokenTargets(currentTargets.concat(activeTokenIds));
+            }
         }
     }
 }

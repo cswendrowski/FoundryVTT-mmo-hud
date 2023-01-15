@@ -10,7 +10,10 @@
                 {{#if initiativeOrder}}
                 <span class="initiative-order">{{initiativeOrder}}</span>
                 {{/if}}
-                <span class="character-level">Lv{{level}}</span> <span class="character-name">{{name}}</span>
+                {{#if level}}
+                <span class="character-level">Lv{{level}} </span>
+                {{/if}}
+                <span class="character-name">{{name}}</span>
             </div>
             <div class="bars flexrow">
                 {{#if primary}}
