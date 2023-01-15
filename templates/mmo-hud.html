@@ -4,7 +4,7 @@
         <h1>{{partySize}}</h1>
         <ul class="party-list rpg-nav">
             {{#each party}}
-            <li class="party-member rpg-nav-item">
+            <li class="party-member rpg-nav-item {{#if targeted}}is-active{{/if}}">
                 {{> characterInfo }}
             </li>
             {{/each}}
