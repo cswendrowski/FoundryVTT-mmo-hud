@@ -1,17 +1,6 @@
 export default class GenericSystem {
 
     /**
-     * Return the id of the system that this converter handles
-     * @returns {string}
-     * @constructor
-     */
-    static get SystemId() {
-        throw new Error("SystemId must be implemented");
-    }
-
-    /* -------------------------------------------- */
-
-    /**
      * Returns the image of the actor that should be drawn for the HUD
      * @param actor
      * @returns {*}
@@ -31,7 +20,7 @@ export default class GenericSystem {
 
         // If a token exists, use that
         const activeTokens = actor.getActiveTokens();
-        if ( activeTokens ) {
+        if ( activeTokens.length > 0 ) {
             return activeTokens[0].document._actor.img;
         }
 
@@ -103,69 +92,100 @@ export default class GenericSystem {
     /* -------------------------------------------- */
 
     /**
-     * Translates an actor into a format that can be used by the party list in the HUD
-     * @param actor
-     * @returns {{secondary: {max, name, theme: string, value}, image: *, effects: *, level: number, name, targeted: *, id, primary: {temp: (DND5E.tokenHPColors|number|number|*), max, name, theme: string, value}}}
+     * Return the Active Effets for the actor
+     * @param {Actor} actor
+     * @returns {Array[ActiveEffect]}
      */
-    translatePartyActor(actor) {
-        function _getActorTokenId(actor) {
-            const activeTokens = actor.getActiveTokens();
-            if (!activeTokens) return null;
-            return activeTokens[0].data._id;
-        }
+    getActiveEffects(actor) {
+        return actor.effects;
+    }
 
+    /* -------------------------------------------- */
+
+    /**
+     * Translates a resource bar into a format that can be used by the party list in the HUD
+     * @param {Actor} actor
+     * @param {string} barAttribute
+     * @returns {{temp, max, name, value}}
+     */
+    translateResourceBar(actor, barAttribute) {
+        if ( !barAttribute ) return null;
+        let attribute = foundry.utils.getProperty(actor, barAttribute);
+        if ( !attribute ) attribute = foundry.utils.getProperty(actor, "system." + barAttribute);
         return {
-            id: actor.id,
-            name: actor.name,
-            level: actor.system.details.level.value,
-            image: this._getActorImage(actor),
-            targeted: game.user.targets.ids.includes(_getActorTokenId(actor)),
-            primary: {
-                name: actor.system.attributes.hp.label,
-                value: actor.system.attributes.hp.value,
-                max: actor.system.attributes.hp.max,
-                temp: actor.system.attributes.hp.temp,
-                theme: "rpg-t-hp"
-            },
-            secondary: {
-                name: actor.system.attributes.recoveries.label,
-                value: actor.system.attributes.recoveries.value,
-                max: actor.system.attributes.recoveries.max,
-                theme: "rpg-t-mp"
-            },
-            effects: actor.effects.map(e => {
-                return {
-                    name: e.label,
-                    icon: e.icon,
-                    isBuff: this._isActiveEffectBuff(actor, e),
-                    isDebuff: this._isActiveEffectDebuff(actor, e),
-                    tooltip: this._getActiveEffectTooltip(actor, e)
-                }
-            })
+            name: attribute.label ?? barAttribute,
+            value: attribute.value,
+            max: attribute.max,
+            temp: attribute.temp ?? 0
         };
     }
 
     /* -------------------------------------------- */
 
+    /**
+     * Translates an actor into a format that can be used by the party list in the HUD
+     * @param actor
+     */
+    translatePartyActor(actor) {
+        function _getActorTokenId(actor) {
+            const activeTokens = actor.getActiveTokens();
+            if ( activeTokens.length === 0 ) return null;
+            return activeTokens[0].data._id;
+        }
+
+        let data = {
+            id: actor.id,
+            name: actor.name,
+            image: this._getActorImage(actor),
+            targeted: game.user.targets.ids.includes(_getActorTokenId(actor)),
+            effects: this.getActiveEffects(actor).map(e => this.translateActiveEffect(actor, e))
+        };
+
+        if ( actor.prototypeToken.bar1?.attribute ) {
+            data.primary = foundry.utils.mergeObject(this.translateResourceBar(actor, actor.prototypeToken.bar1?.attribute), { theme: "rpg-t-hp" });
+        }
+        if ( actor.prototypeToken.bar2?.attribute ) {
+            data.secondary = foundry.utils.mergeObject(this.translateResourceBar(actor, actor.prototypeToken.bar2?.attribute), { theme: "rpg-t-mp" });
+        }
+        return data;
+    }
+
+    /* -------------------------------------------- */
+
+    /**
+     * Translates a Token into a format that can be used by the enemy list in the HUD
+     * @param token
+     */
     translateEnemyToken(token) {
         return {
             id: token._id,
             name: token.name,
-            level: token.actor.system.details.level.value,
             primary: {
                 name: token.actor.system.attributes.hp.label,
                 value: token.actor.system.attributes.hp.value,
                 temp: token.actor.system.attributes.hp.temp,
                 max: token.actor.system.attributes.hp.max
             },
-            effects: token.actor.effects.map(e => {
-                return {
-                    name: e.label,
-                    icon: e.icon,
-                    isBuff: e.changes.some(c => c.value > 0),
-                    isDebuff: e.changes.some(c => c.value < 0),
-                }
-            })
+            effects: this.getActiveEffects(token.actor).map(e => this.translateActiveEffect(token.actor, e)),
+            showEffects: true
+        }
+    }
+
+    /* -------------------------------------------- */
+
+    /**
+     * Translates an ActiveEffect into a format that can be used by the party list in the HUD
+     * @param actor
+     * @param effect
+     * @returns {{isDebuff: boolean, name, icon, isBuff: boolean}}
+     */
+    translateActiveEffect(actor, effect) {
+        return {
+            name: effect.label,
+            icon: effect.icon,
+            isBuff: this._isActiveEffectBuff(actor, effect),
+            isDebuff: this._isActiveEffectDebuff(actor, effect),
+            tooltip: this._getActiveEffectTooltip(actor, effect)
         }
     }
 }

@@ -1,4 +1,7 @@
 import GenericSystem from "../systems/genericSystem.mjs";
+import ArchmageSystem from "../systems/ArchmageSystem.mjs";
+import DnD5eSystem from "../systems/DND5eSystem.mjs";
+import PF2eSystem from "../systems/PF2eSystem.mjs";
 
 export default class MMOHUD extends Application {
     static get defaultOptions() {
@@ -32,13 +35,13 @@ export default class MMOHUD extends Application {
 
         switch (game.system.id) {
             case "archmage":
-                //this.systemConverter = new ArchmageSystem();
+                this.systemConverter = new ArchmageSystem();
                 break;
             case "dnd5e":
-                //this.systemConverter = new DnD5eSystem();
+                this.systemConverter = new DnD5eSystem();
                 break;
             case "pf2e":
-                //this.systemConverter = new PF2eSystem();
+                this.systemConverter = new PF2eSystem();
                 break;
             default:
                 console.log(`MMO HUD | No specific system converter found for ${game.system.id}, using the Generic one.`);
@@ -68,20 +71,29 @@ export default class MMOHUD extends Application {
 
             // Calculate percentages
             data.party.forEach((member) => {
-                const tempWouldExceedMax = member.primary.value + member.primary.temp > member.primary.max;
-                const totalPrimary = tempWouldExceedMax ? (member.primary.value + (member.primary.temp ?? 0)) : member.primary.max;
-                member.primary.percent = Math.round((member.primary.value / totalPrimary) * 100);
-                if ( member.primary.temp ) {
-                    member.primary.bonusPercent = Math.round((member.primary.temp / totalPrimary) * 100);
-                    if ( member.primary.percent + member.primary.bonusPercent > 100 ) {
-                        member.primary.bonusPercent = 100 - member.primary.percent;
+                if ( member.primary ) {
+                    const tempWouldExceedMax = member.primary.value + member.primary.temp > member.primary.max;
+                    const totalPrimary = tempWouldExceedMax ? (member.primary.value + (member.primary.temp ?? 0)) : member.primary.max;
+                    member.primary.percent = Math.round((member.primary.value / totalPrimary) * 100);
+                    if (member.primary.temp) {
+                        member.primary.bonusPercent = Math.round((member.primary.temp / totalPrimary) * 100);
+                        if (member.primary.percent + member.primary.bonusPercent > 100) {
+                            member.primary.bonusPercent = 100 - member.primary.percent;
+                        }
                     }
                 }
-                member.secondary.percent = Math.round((member.secondary.value / member.secondary.max) * 100);
+                if ( member.secondary ) {
+                    member.secondary.percent = Math.round((member.secondary.value / member.secondary.max) * 100);
+                }
             });
 
             // Determine party size
             data.partySize = this._getPartySize(data.party.length);
+
+            // If any party members have effects, show the effects box
+            const showEffects = data.party.some(p => p.effects.length > 0);
+            data.party.forEach(p => p.showEffects = showEffects);
+
             this.partyIds = data.party.map(p => p.id);
         }
         data.enemies = this._getEnemies(data.party?.map(a => a.id) ?? []);
