@@ -2,7 +2,7 @@ import MMOHUD from "../apps/MMOHUD.mjs";
 
 Hooks.once('init', async function() {
     const rerenderHooks = ["updateActor", "targetToken", "updateCombat",
-        "deleteCombatant", "createCombatant"];
+        "deleteCombatant", "createCombatant", "updateUser"];
     for (const hook of rerenderHooks) {
         Hooks.on(hook, _updateMmoHud);
     }

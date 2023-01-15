@@ -160,12 +160,7 @@ export default class GenericSystem {
         return {
             id: token._id,
             name: token.name,
-            primary: {
-                name: token.actor.system.attributes.hp.label,
-                value: token.actor.system.attributes.hp.value,
-                temp: token.actor.system.attributes.hp.temp,
-                max: token.actor.system.attributes.hp.max
-            },
+            primary: this.translateResourceBar(token.actor, token.actor.prototypeToken.bar1?.attribute),
             effects: this.getActiveEffects(token.actor).map(e => this.translateActiveEffect(token.actor, e)),
             showEffects: true
         }

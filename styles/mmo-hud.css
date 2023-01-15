@@ -121,6 +121,9 @@
   left: 63% !important;
   top: 33px !important;
 }
+#mmo-hud-enemy-info .enemy {
+  list-style: none;
+}
 [class*="rpg-"] a::after {
   z-index: 200;
 }
