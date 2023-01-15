@@ -2,6 +2,7 @@ import GenericSystem from "../systems/genericSystem.mjs";
 import ArchmageSystem from "../systems/ArchmageSystem.mjs";
 import DnD5eSystem from "../systems/DND5eSystem.mjs";
 import PF2eSystem from "../systems/PF2eSystem.mjs";
+import SWADESystem from "../systems/SwadeSystem.mjs";
 
 export default class MMOHUD extends Application {
     static get defaultOptions() {
@@ -42,6 +43,9 @@ export default class MMOHUD extends Application {
                 break;
             case "pf2e":
                 this.systemConverter = new PF2eSystem();
+                break;
+            case "swade":
+                this.systemConverter = new SWADESystem();
                 break;
             default:
                 console.log(`MMO HUD | No specific system converter found for ${game.system.id}, using the Generic one.`);
@@ -130,7 +134,11 @@ export default class MMOHUD extends Application {
 
     _getParty() {
         // All actors that are assigned to a Player
-        let party = game.users.map(u => u.character).filter(c => c);;
+        let users = game.users;
+        if ( game.settings.get("mmo-hud", "partySetup") === "loggedin" ) {
+            users = game.users.filter(u => u.active);
+        }
+        let party = users.map(u => u.character).filter(c => c);
 
         // If we are in combat, additionally return all actors with disposition of Friendly
         function _isFriendly(actor) {
@@ -145,6 +153,8 @@ export default class MMOHUD extends Application {
                 .map(c => c.actor);
             party = party.concat(friendlyCombatants);
         }
+
+        party = Array.from([...new Set(party)]);
 
         // Translate the actor data into the format we need
         let data = party.map(a => this.systemConverter.translatePartyActor(a));

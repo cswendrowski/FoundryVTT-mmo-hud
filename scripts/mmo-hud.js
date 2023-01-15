@@ -1,8 +1,8 @@
 import MMOHUD from "../apps/MMOHUD.mjs";
 
 Hooks.once('init', async function() {
-    const rerenderHooks = ["updateActor", "targetToken", "updateCombat",
-        "deleteCombatant", "createCombatant", "updateUser"];
+    const rerenderHooks = ["updateActor", "targetToken", "updateCombat", "userConnected",
+        "deleteCombatant", "createCombatant", "updateUser", "createActiveEffect", "deleteActiveEffect"];
     for (const hook of rerenderHooks) {
         Hooks.on(hook, _updateMmoHud);
     }
@@ -19,6 +19,21 @@ Hooks.once('init', async function() {
             "always": "Always",
             "combat": "Only in Combat",
             "never": "Never"
+        }
+    });
+
+    game.settings.register("mmo-hud", "partySetup", {
+        name: "Party Setup",
+        hint: "How should Party members be determined?",
+        scope: "world",
+        restricted: true,
+        config: true,
+        type: String,
+        onChange: _updateMmoHud,
+        default: "assigned",
+        choices: {
+            "assigned": "Actors assigned as \"Selected Character\" for any User",
+            "loggedin": "Actors assigned as \"Selected Character\" for only logged in Users"
         }
     });
 
@@ -79,4 +94,5 @@ Hooks.on("deleteCombat", () => {
     for (const token of canvas.tokens.placeables) {
         token.document.unsetFlag("mmo-hud", "boss");
     }
+    _updateMmoHud();
 });
