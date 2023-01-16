@@ -5,6 +5,18 @@
 
 A retro fantasy RPG-inspired Party HUD with Enemy health bars
 
+## How does it work?
+
+The Party list (top left) is populated with the following:
+
+1) All Actors assigned as a "Selected Character" to a User (with a game option to have this only apply to logged-in users)
+2) While a Combat is active, additionall all friendly disposition combatants
+
+The Enemy targeting (bottom middle) is populated with the following:
+
+1) Any targeted Tokens that are not in the Party List
+2) Any Combatants that have had the "Toggle MMO Health Bar" button in the combatants list toggled on
+
 ![](https://media.discordapp.net/attachments/830182194533892116/1063996189487398962/image.png)
 
 ## Explicit System Support
