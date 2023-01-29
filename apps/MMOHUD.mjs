@@ -69,6 +69,7 @@ export default class MMOHUD extends Application {
     async getData(options) {
         const showMode = game.settings.get("mmo-hud", "showMode");
         let data = await super.getData(options);
+        data.hudSize = game.settings.get("mmo-hud", "size");
         data.boxClass = game.settings.get("mmo-hud", "transparentVersion") ? "rpg-title-box" : "rpg-box";
         if ( showMode === "always" || (showMode === "combat" && game.combat) ) {
             data.party = this._getParty();

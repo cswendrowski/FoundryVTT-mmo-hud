@@ -8,6 +8,16 @@
 #mmo-hud-party > h1 {
   color: #cebda0;
 }
+#mmo-hud-party.small {
+  scale: 80%;
+  top: 40px;
+  left: 65px;
+}
+#mmo-hud-party.compact {
+  scale: 90%;
+  top: 50px;
+  left: 90px;
+}
 #mmo-hud-party .character-info,
 #mmo-hud-enemy-info .character-info {
   color: #d4f0f3;

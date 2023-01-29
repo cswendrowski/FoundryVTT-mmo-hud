@@ -5,7 +5,7 @@ export default class DnD5eSystem extends GenericSystem {
     /** @override */
     getActiveEffects(actor) {
         let effects = super.getActiveEffects(actor);
-        return effects.filter(e => !e.disabled && e.isTemporary);
+        return effects.filter(e => e.isTemporary);
     }
 
     /* -------------------------------------------- */

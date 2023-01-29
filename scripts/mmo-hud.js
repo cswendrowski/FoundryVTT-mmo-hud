@@ -1,8 +1,10 @@
 import MMOHUD from "../apps/MMOHUD.mjs";
 
 Hooks.once('init', async function() {
-    const rerenderHooks = ["updateActor", "targetToken", "updateCombat", "userConnected",
-        "deleteCombatant", "createCombatant", "updateUser", "createActiveEffect", "deleteActiveEffect"];
+    const rerenderHooks = ["updateActor", "targetToken",
+        "updateUser", "userConnected",
+        "createCombatant", "updateCombat", "deleteCombatant",
+        "createActiveEffect", "updateActiveEffect", "deleteActiveEffect"];
     for (const hook of rerenderHooks) {
         Hooks.on(hook, _updateMmoHud);
     }
@@ -45,6 +47,21 @@ Hooks.once('init', async function() {
         default: false,
         onChange: _updateMmoHud,
         type: Boolean
+    });
+
+    game.settings.register("mmo-hud", "size", {
+        name: "Size",
+        hint: "What size should the HUD be?",
+        scope: "user",
+        config: true,
+        default: "fullsize",
+        onChange: _updateMmoHud,
+        type: String,
+        choices: {
+            "small": "Small",
+            "compact": "Compact",
+            "fullsize": "Fullsize"
+        }
     });
 });
 

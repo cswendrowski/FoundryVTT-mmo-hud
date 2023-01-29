@@ -97,7 +97,7 @@ export default class GenericSystem {
      * @returns {Array[ActiveEffect]}
      */
     getActiveEffects(actor) {
-        return actor.effects;
+        return actor.effects.filter(e => !e.disabled);
     }
 
     /* -------------------------------------------- */
