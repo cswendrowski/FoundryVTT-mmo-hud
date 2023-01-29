@@ -105,10 +105,12 @@ export default class MMOHUD extends Application {
 
         // Calculate percentages
         data.enemies.forEach((enemy) => {
-            const totalPrimary = enemy.primary.max + (enemy.primary.temp ?? 0);
-            enemy.primary.percent = Math.round((enemy.primary.value / totalPrimary) * 100);
-            if ( enemy.primary.temp ) {
-                enemy.primary.bonusPercent = Math.round((enemy.primary.temp / totalPrimary) * 100);
+            if ( enemy.primary ) {
+                const totalPrimary = enemy.primary.max + (enemy.primary.temp ?? 0);
+                enemy.primary.percent = Math.round((enemy.primary.value / totalPrimary) * 100);
+                if (enemy.primary.temp) {
+                    enemy.primary.bonusPercent = Math.round((enemy.primary.temp / totalPrimary) * 100);
+                }
             }
         });
 
